@@ -12,5 +12,5 @@ Pod::Spec.new do |s|
       :tag => s.version.to_s
 }
   s.source_files = 'MCNotificationManager/*.{h,m}'
-  s.public_header_files = 'MCNotificationManager/{MCNotificationManager,MCNotification}.h'
+  s.public_header_files = 'MCNotificationManager/{MCNotificationManager,MCNotification,MCNotificationView}.h'
 end
