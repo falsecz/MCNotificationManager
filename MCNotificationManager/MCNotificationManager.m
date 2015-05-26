@@ -50,35 +50,36 @@ static NSTimeInterval const kMCNotificationManagerPresentationDuration = 3;
     if ([self.queue count] > 0 && !self.bannerView) {
         MCNotification *notification = [self.queue firstObject];
         [self.queue removeObjectAtIndex:0];
-        
+
         if (nil == notification.target)
             [notification addTarget:self action:@selector(hideNotification)
                    forControlEvents:UIControlEventTouchUpInside];
-        
+
         MCNotificationView *view = [MCNotificationView view];
+
         view.notification = notification;
-        
+
         if (0 == notification.duration)
             notification.duration = kMCNotificationManagerPresentationDuration;
-        
+
         UIView *containerView = [self containerViewInKeyWindow];
-        
+
         // create banner view
         UIToolbar *bannerView = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(containerView.bounds), CGRectGetHeight(view.frame))];
         bannerView.barStyle = UIBarStyleBlack;
         bannerView.barTintColor = view.notification.backgroundColor;
-        
+
         // center notification view in banner
         view.center = CGPointMake(CGRectGetWidth(bannerView.bounds)/2,
                                   CGRectGetHeight(bannerView.bounds)/2);
-        
+
         // create view hierarchy
         [bannerView addSubview:view];
         self.bannerView = bannerView;
-        
+
         [containerView addSubview:self.bannerView];
         self.bannerView.transform = CGAffineTransformMakeTranslation(0, -CGRectGetHeight(self.bannerView.frame));
-        
+
         __weak typeof(self) weakSelf = self;
         [UIView animateWithDuration:kMCNotificationManagerAnimationDuration delay:0 options:UIViewAnimationOptionCurveEaseIn animations:^{
             typeof(self) strongSelf = weakSelf;
@@ -92,7 +93,7 @@ static NSTimeInterval const kMCNotificationManagerPresentationDuration = 3;
 
 - (void)hideNotification {
     [[self class] cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideNotification) object:nil];
-    
+
     if (self.bannerView) {
         __weak typeof(self) weakSelf = self;
         [UIView animateWithDuration:kMCNotificationManagerAnimationDuration delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -102,7 +103,7 @@ static NSTimeInterval const kMCNotificationManagerPresentationDuration = 3;
             typeof(self) strongSelf = weakSelf;
             [[strongSelf.bannerView superview] removeFromSuperview];
             strongSelf.bannerView = nil;
-            
+
             [strongSelf processNotifications];
         }];
     }
@@ -115,15 +116,15 @@ static CGFloat RotationAngleAccountingForOrientation(UIInterfaceOrientation orie
 		case UIInterfaceOrientationLandscapeLeft:
 			return -M_PI / 2;
 			break;
-            
+
 		case UIInterfaceOrientationLandscapeRight:
 			return M_PI / 2;
 			break;
-            
+
 		case UIInterfaceOrientationPortraitUpsideDown:
 			return M_PI;
 			break;
-            
+
 		default:
 			return 0;
 			break;
@@ -145,12 +146,12 @@ static CGFloat RotationAngleAccountingForOrientation(UIInterfaceOrientation orie
 		transform = CGAffineTransformTranslate(transform, -offset, offset);
 	}
 	transform = CGAffineTransformRotate(transform, RotationAngleAccountingForOrientation(orientation));
-    
+
     UIView *containerView = [[MCTransparentView alloc] initWithFrame:bounds];
     containerView.transform = transform;
-    
+
     [keyWindow addSubview:containerView];
-    
+
     return containerView;
 }
 
